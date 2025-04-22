@@ -24,7 +24,7 @@ sudo snap install trivy
 
 # Step 5: Install kubectl
 echo "Installing kubectl..."
-sudo apt-get install curl -y
+sudo apt-get install curl unzip -y
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl 
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
