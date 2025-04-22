@@ -30,12 +30,12 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-    - name: Build and Push Docker image
+    - name: Build and push
       uses: docker/build-push-action@v6
       with:
-        context: .
         push: true
         tags: pavan539/bankapp:latest
-        file: Dockerfile
