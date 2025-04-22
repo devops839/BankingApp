@@ -21,6 +21,7 @@ jobs:
 
   docker_build_and_push:
     runs-on: ubuntu-latest
+    needs: maven_build
 
     steps:
     - name: Log in to Docker Hub
@@ -31,8 +32,8 @@ jobs:
         
     - name: Build Docker image
       run: |
-        docker build -t pavan539/bankapp:${{ github.sha }} .
+        docker build -t pavan539/bankapp:latest.
         
     - name: Push Docker image to Docker Hub
       run: |
-        docker push pavan539/bankapp:${{ github.sha }}
+        docker push pavan539/bankapp:latest
