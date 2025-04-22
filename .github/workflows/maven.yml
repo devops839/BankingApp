@@ -17,4 +17,22 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn clean package
+      run: mvn compile verify
+      
+  docker_build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Docker Build & Push
+      run: |
+        docker build -t pavan539/bankapp:${{ github.sha }} .
+        docker push pavan539/bankapp:${{ github.sha }}
+        docker run -d -p 8080:8080 pavan539/bankapp:${{ github.sha }}
+        docker ps
+      
+        
