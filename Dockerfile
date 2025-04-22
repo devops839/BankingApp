@@ -1,5 +1,6 @@
+# Use OpenJDK 17 image as the base image
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY app/target/bankapp-0.0.1-SNAPSHOT.jar /app/bank-app.jar  # Updated path to match where the JAR is downloaded
 EXPOSE 8080
-CMD ["java", "-jar", "/app/bank-app.jar"]
+COPY app/*.jar /app/bankapp.jar
+CMD ["java", "-jar", "/app/bankapp.jar"]
