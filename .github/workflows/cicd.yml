@@ -31,7 +31,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}  # 'DOCKER_PASSWORD' should be in secrets for security reasons
     - name: Docker Build & Push
       run: |
-        docker build -t pavan539/bankapp:${{ github.sha }} .  
+        docker build -t pavan539/bankapp:${{ github.sha }} -f Dockerfile . 
         docker push pavan539/bankapp:${{ github.sha }}
         docker run -d -p 8080:8080 pavan539/bankapp:${{ github.sha }}
-        docker ps  # Show running containers to verify it's up
+        docker ps
