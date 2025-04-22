@@ -7,7 +7,7 @@ COPY src /app/src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Create the production image
-FROM FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/bankapp-0.0.1-SNAPSHOT.jar /app/bank-app.jar
 EXPOSE 8080
