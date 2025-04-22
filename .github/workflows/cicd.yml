@@ -32,4 +32,4 @@ jobs:
     - name: Docker Build
       run: docker build -t pavan539/bankapp:${{ github.sha }} -f Dockerfile . 
     - name: Docker Run
-      run: docker run -d -p 8080:8080 pavan539/bankapp:${{ github.sha }
+      run: docker run -d -p 8080:8080 pavan539/bankapp:${{ github.sha }}
