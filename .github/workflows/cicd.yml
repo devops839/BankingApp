@@ -61,7 +61,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
-  build_docker_image_and_push:
+  docker-build-push:
     runs-on: self-hosted
     needs: sonar_scan
 
@@ -84,7 +84,23 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${{ secrets.ACR_URL }}/bankapp:${{ github.sha }}" >> $GITHUB_ENV
+        
       - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.ACR_URL }}/bankapp:${{ github.sha }} .
-          docker push ${{ secrets.ACR_URL }}/bankapp:${{ github.sha }}
+          docker build . -t $IMAGE_TAG
+          docker push $IMAGE_TAG
+
+  deploy-to-k8s:
+    runs-on: self-hosted
+    needs: docker-build-push
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Replace image tag in deployment
+      run: |
+        sed -E "s|image:.*|image: $IMAGE_TAG|" k8s/deployment.yaml > k8s/deployment-final.yaml
+
+    - name: Apply Kubernetes Deployment
+      run: kubectl apply -f k8s/deployment-final.yaml
