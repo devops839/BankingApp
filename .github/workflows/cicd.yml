@@ -70,6 +70,8 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          install: true  # <-- ensure buildx is set as the default builder
 
       - name: Docker Login
         uses: azure/docker-login@v1
