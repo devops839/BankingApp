@@ -13,4 +13,4 @@ pipeline {
     }
 }
 
-#Jenkins UI → bankapp-deploy → Configure → Build Triggers: ✅ Check Build after other projects are built, and then In Projects to watch, enter bankapp-build and run build pipeline, after successful run it will run deploy pipeline
+// Jenkins UI → bankapp-deploy → Configure → Build Triggers: ✅ Check Build after other projects are built, and then In Projects to watch, enter bankapp-build and run build pipeline, after successful run it will run deploy pipeline
