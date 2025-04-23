@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Docker_Cleanup_And_Run') {
+            steps {
+                sh '''
+                    docker rm -f bank-container || true
+                    docker run -d -p 8008:8080 --name bank-container bankapp:latest
+                '''
+            }
+        }
+    }
+}
+
+#Jenkins UI → bankapp-deploy → Configure → Build Triggers: ✅ Check Build after other projects are built, and then In Projects to watch, enter bankapp-build and run build pipeline, after successful run it will run deploy pipeline
