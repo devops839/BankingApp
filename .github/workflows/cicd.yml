@@ -56,33 +56,32 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
-build_docker_image_and_push:
-  runs-on: self-hosted
-  needs: sonar_scan
-  steps:
-    - uses: actions/checkout@v4
+  build_docker_image_and_push:
+    runs-on: self-hosted
+    needs: sonar_scan
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Download JAR artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: app-jar
-        path: ./app  # Download JAR to ./app folder
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: ./app  # Download JAR to ./app folder
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Docker Login
-      uses: azure/docker-login@v1
-      with:
-        login-server: ${{ secrets.ACR_URL }}
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+      - name: Docker Login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_URL }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Build and Push to ACR
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        context: .
-        file: Dockerfile
-        tags: ${{ secrets.IMAGE_TAG }}
-
+      - name: Build and Push to ACR
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          file: Dockerfile
+          tags: ${{ secrets.IMAGE_TAG }}
