@@ -117,6 +117,7 @@ jobs:
       - name: Apply Kubernetes Deployment
         run: |
           echo "IMAGE_TAG=${{ secrets.ACR_URL }}/bankapp:${{ github.sha }}" >> $GITHUB_ENV
+          export IMAGE_TAG=${{ secrets.ACR_URL }}/bankapp:${{ github.sha }}
           envsubst < k8s/deployment.yaml > k8s/deployment-new.yaml
           cat k8s/deployment-new.yaml
           kubectl apply -f k8s/deployment-new.yaml
