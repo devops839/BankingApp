@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: bankapp
-        image: $IMAGE_TAG  # Will be replaced by GitHub Actions
+        image: ${IMAGE_TAG}    # Will be replaced by GitHub Actions
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
