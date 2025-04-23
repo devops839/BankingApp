@@ -25,7 +25,11 @@ newgrp docker
 
 # Step 4: Install Trivy
 echo "Installing Trivy..."
-sudo snap install trivy
+sudo apt install -y unzip curl
+curl -sfL https://github.com/aquasecurity/trivy/releases/download/v0.35.0/trivy_0.35.0_Linux-64bit.tar.gz -o trivy.tar.gz
+tar -zxvf trivy.tar.gz
+sudo mv trivy /usr/local/bin/
+trivy --version
 
 # Step 5: Install kubectl
 echo "Installing kubectl..."
