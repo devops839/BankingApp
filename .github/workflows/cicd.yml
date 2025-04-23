@@ -5,9 +5,8 @@ on:
     branches: ["main"]
 
 permissions:
-  id-token: write
   contents: read
-  
+
 jobs:
   maven-build:
     runs-on: self-hosted
@@ -104,19 +103,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ✅ Azure Login using Client Secret (NOT OIDC)
+      # ✅ Azure Login using Service Principal Secret (JSON format)
       - name: Log in to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          enable-AzPSSession: false
-          environment: azurecloud
-          auth-type: SERVICE_PRINCIPAL
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Set up kubectl for AKS
       - name: Set up kubectl for AKS
         run: |
           az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
