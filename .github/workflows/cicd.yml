@@ -53,8 +53,8 @@ jobs:
       with:
         pollingTimeoutSec: 600
       env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
   build_docker_image_and_push:
     runs-on: self-hosted
@@ -74,7 +74,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker Login
+      - name: Docker Login to Azure Container Registry
         uses: azure/docker-login@v2
         with:
           login-server: ${{ secrets.ACR_URL }}
@@ -82,9 +82,13 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and Push to ACR
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v2
         with:
           push: true
           context: .
           file: Dockerfile
           tags: ${{ secrets.IMAGE_TAG }}
+          load: false
+          no-cache: false
+          pull: false
+          github-token: ${{ secrets.GITHUBTOKEN }}
