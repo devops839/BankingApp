@@ -4,6 +4,9 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  id-token: write  # Ensures correct permission for Azure login
+
 jobs:
   maven-build:
     runs-on: self-hosted
@@ -32,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Trivy FS Scan
-        run: trivy fs --format table -o fs-report.json .
+        run: trivy fs --format table -o fs-report.json . 
 
   sonar_scan:
     runs-on: self-hosted
@@ -86,7 +89,7 @@ jobs:
 
       - name: Set image tag
         run: echo "IMAGE_TAG=${{ secrets.ACR_URL }}/bankapp:${{ github.sha }}" >> $GITHUB_ENV
-        
+
       - name: Build and Push Docker Image
         run: |
           docker build . -t $IMAGE_TAG
@@ -97,7 +100,7 @@ jobs:
     needs: docker-build-push
     steps:
       - uses: actions/checkout@v4
-      
+
       # Azure Login using Service Principal
       - name: Log in to Azure
         uses: azure/login@v2
@@ -114,7 +117,6 @@ jobs:
       - name: Replace image tag in deployment
         run: |
           sed -E "s|image:.*|image: $IMAGE_TAG|" k8s/deployment.yaml > k8s/deployment-final.yaml
-          
+
       - name: Apply Kubernetes Deployment
         run: kubectl apply -f k8s/deployment-final.yaml
-
