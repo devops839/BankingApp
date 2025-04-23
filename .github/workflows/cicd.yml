@@ -96,11 +96,16 @@ jobs:
     runs-on: self-hosted
     needs: docker-build-push
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+  
+      - name: Set up kubectl for AKS
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
+  
+      - name: Replace image tag in deployment
+        run: |
+          sed -E "s|image:.*|image: $IMAGE_TAG|" k8s/deployment.yaml > k8s/deployment-final.yaml
+  
+      - name: Apply Kubernetes Deployment
+        run: kubectl apply -f k8s/deployment-final.yaml
 
-    - name: Replace image tag in deployment
-      run: |
-        sed -E "s|image:.*|image: $IMAGE_TAG|" k8s/deployment.yaml > k8s/deployment-final.yaml
-
-    - name: Apply Kubernetes Deployment
-      run: kubectl apply -f k8s/deployment-final.yaml
