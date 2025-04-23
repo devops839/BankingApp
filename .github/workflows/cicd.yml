@@ -103,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ✅ Azure Login using Service Principal Secret (JSON format)
+      # ✅ Azure Login using Service Principal Secret (JSON format), store json in single line format in github secrets
       - name: Log in to Azure
         uses: azure/login@v2
         with:
@@ -113,21 +113,11 @@ jobs:
         run: |
           az aks get-credentials --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} --name ${{ secrets.AKS_CLUSTER_NAME }}
 
-      # ✅ Debug and verify IMAGE_TAG
-      - name: Debug IMAGE_TAG
-        run: echo "IMAGE_TAG=${{ secrets.ACR_URL }}/bankapp:${{ github.sha }}"
-
-      # ✅ Replace image tag in deployment.yaml
-      - name: Replace image tag in deployment.yaml
-        run: |
-          echo "Replacing image tag in deployment.yaml"
-          sed -i "s|image:.*|image: ${IMAGE_TAG}|" k8s/deployment.yaml
-
-      # ✅ Print final deployment.yaml for verification
-      - name: Print final deployment.yaml
-        run: cat k8s/deployment.yaml
-
-      # ✅ Apply Kubernetes Deployment
+      # ✅ Set and export IMAGE_TAG & Apply Kubernetes Deployment
       - name: Apply Kubernetes Deployment
         run: |
-          kubectl apply -f k8s/deployment.yaml
+          echo "IMAGE_TAG=${{ secrets.ACR_URL }}/bankapp:${{ github.sha }}" >> $GITHUB_ENV
+          envsubst < k8s/deployment.yaml > k8s/deployment-new.yaml
+          cat k8s/deployment-new.yaml
+          kubectl apply -f k8s/deployment-new.yaml
+
